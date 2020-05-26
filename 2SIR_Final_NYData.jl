@@ -34,10 +34,15 @@ function simulacion( name; num_dias_simulacion = 350, mu_jov = (0.4692/1000.0)*(
         du[6] = mu_2*u[2]
         du[7] = rec_1*u[1] + rec_2*u[2]
         du[8] = mu_1*u[1]+mu_2*u[2]
+        #Severe patients:
+        du[9] = (100/21.1)*((2.7276/1000.0)/Dur* du[1] + (1.74/100.0)/Dur * du[2])
+        #Critical patients (upper bound)
+        du[10] = (1/2)*du[9]
+
     end
     #Initial conditions (Bogota):
     N = 8281.0
-    u0 = [0.1; 0.01; 7558.79-0.1; 722.234-0.01; 0.0 ; 0.0 ; 0.0; 0.0]
+    u0 = [0.1; 0.01; 7558.79-0.1; 722.234-0.01; 0.0 ; 0.0 ; 0.0; 0.0; 0.0; 0.0]
     #
     tspan = (0.0,num_dias_simulacion)
     prob = ODEProblem(SIRD,u0,tspan)
@@ -67,7 +72,7 @@ font = Plots.font("Helvetica", 10)
 deathsPlot2 = plot(title= "Cumulative number of deaths:", legend=:topleft, legendfont= font, size =(800,600), lw=15)
 
 font = Plots.font("Helvetica", 10)
-InfectedPlot = plot(title= "Number of Infected individuals each group", legend=:topright, legendfont= font, size =(800,600), lw=15)
+InfectedPlot = plot(title= "Estimated severe (H) and critically ill (ICU) patients:", legend=:topright, legendfont= font, size =(800,600), lw=15)
 
 #Quarentena maxima
 max_quar = 120
@@ -83,8 +88,8 @@ sol = simulacion(nombre)
 plot!(deathsPlot1,sol, linecolor= :blue, vars = [(0,5)], linestyle = :dot, label="NQ:D_1",yformatter = :plain)
 plot!(deathsPlot1,sol, linecolor= :red, vars = [(0,6)],linestyle = :dot, label="NQ:D_2",yformatter = :plain)
 
-plot!(InfectedPlot,sol, linecolor= :blue, vars = [(0,1)], linestyle = :dot, label="NQ:I_1",yformatter = :plain)
-plot!(InfectedPlot,sol, linecolor= :red, vars = [(0,2)],linestyle = :dot, label="NQ:I_2",yformatter = :plain)
+plot!(InfectedPlot,sol, linecolor= :blue, vars = [(0,9)], linestyle = :dot, label="NQ:H",yformatter = :plain)
+plot!(InfectedPlot,sol, linecolor= :red, vars = [(0,10)],linestyle = :dot, label="NQ:ICU",yformatter = :plain)
 
 
 plot!(deathsPlot2,sol, vars = [(0,8)], linestyle = :dot, label="NQ",yformatter = :plain)
@@ -107,8 +112,8 @@ sol = simulacion(nombre)
 plot!(deathsPlot1, sol, linecolor=:blue, vars = (0,5), linestyle = :dash, label="RBQ_S:D_1")
 plot!(deathsPlot1, sol, linecolor=:red , vars = (0,6), linestyle = :dash, label="RBQ_S:D_2")
 
-plot!(InfectedPlot, sol, linecolor=:blue, vars = (0,1), linestyle = :dash, label="RBQ_S:I_1")
-plot!(InfectedPlot, sol, linecolor=:red , vars = (0,2), linestyle = :dash, label="RBQ_S:I_2")
+plot!(InfectedPlot, sol, linecolor=:blue, vars = (0,9), linestyle = :dash, label="RBQ_S:S")
+plot!(InfectedPlot, sol, linecolor=:red , vars = (0,10), linestyle = :dash, label="RBQ_S:ICU")
 
 
 plot!(deathsPlot2, sol, vars = (0,8), linestyle = :dash, label="RBQ_S",yformatter = :plain)
@@ -126,8 +131,8 @@ sol = simulacion(nombre)
 plot!(deathsPlot1, sol, linecolor=:blue, vars = (0,5), linestyle = :dashdot, label="RBQ_M:D_1")
 plot!(deathsPlot1, sol, linecolor=:red , vars = (0,6), linestyle = :dashdot, label="RBQ_M:D_2")
 
-plot!(InfectedPlot, sol, linecolor=:blue, vars = (0,1), linestyle = :dashdot, label="RBQ_M:I_1")
-plot!(InfectedPlot, sol, linecolor=:red , vars = (0,2), linestyle = :dashdot, label="RBQ_M:I_2")
+plot!(InfectedPlot, sol, linecolor=:blue, vars = (0,9), linestyle = :dashdot, label="RBQ_M:S")
+plot!(InfectedPlot, sol, linecolor=:red , vars = (0,10), linestyle = :dashdot, label="RBQ_M:ICU")
 
 plot!(deathsPlot2, sol, vars = (0,8), linestyle = :dashdot, label="RBQ_M")
 print_res(sol, nombre)
@@ -144,8 +149,8 @@ sol = simulacion(nombre)
 plot!(deathsPlot1, sol, linecolor=:blue, vars = (0,5), linestyle = :solid, label="RBQ_L:D_1")
 plot!(deathsPlot1, sol, linecolor=:red , vars = (0,6), linestyle = :solid, label="RBQ_L:D_2")
 
-plot!(InfectedPlot, sol, linecolor=:blue, vars = (0,1), linestyle = :solid, label="RBQ_L:I_1")
-plot!(InfectedPlot, sol, linecolor=:red , vars = (0,2), linestyle = :solid, label="RBQ_L:I_2")
+plot!(InfectedPlot, sol, linecolor=:blue, vars = (0,9), linestyle = :solid, label="RBQ_L:S")
+plot!(InfectedPlot, sol, linecolor=:red , vars = (0,10), linestyle = :solid, label="RBQ_L:ICU")
 
 
 plot!(deathsPlot2, sol, vars = (0,8), linestyle = :solid, label="RBQ_L",yformatter = :plain)
@@ -166,8 +171,8 @@ sol = simulacion(nombre)
 plot!(deathsPlot1, sol, linecolor=:blue, vars = (0,5), linestyle = :dashdotdot, label="EQ:D_1")
 plot!(deathsPlot1, sol, linecolor=:red , vars = (0,6), linestyle = :dashdotdot, label="EQ:D_2")
 
-plot!(InfectedPlot, sol, linecolor=:blue, vars = (0,1), linestyle = :dashdotdot, label="EQ:I_1")
-plot!(InfectedPlot, sol, linecolor=:blue, vars = (0,2), linestyle = :dashdotdot, label="EQ:I_2")
+plot!(InfectedPlot, sol, linecolor=:blue, vars = (0,9), linestyle = :dashdotdot, label="EQ:S")
+plot!(InfectedPlot, sol, linecolor=:red, vars = (0,10), linestyle = :dashdotdot, label="EQ:ICU")
 
 
 plot!(deathsPlot2, sol, vars = (0,8), linestyle = :dashdotdot, label="EQ",yformatter = :plain)
@@ -176,4 +181,4 @@ print_res(sol, nombre)
 
 savefig(deathsPlot1, name*"_deathsPlot_v1.png")
 savefig(deathsPlot2, name*"_deathsPlot_v2.png")
-savefig(InfectedPlot, name*"_InfectedPlot.png")
+savefig(InfectedPlot, name*"_severe_and_critical.png")

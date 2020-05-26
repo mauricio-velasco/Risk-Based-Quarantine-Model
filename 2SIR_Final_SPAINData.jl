@@ -1,4 +1,4 @@
-#Mortality (and the split into high-risk and low risk taken from ICL group)
+#Mortality (and the split into high-risk and low risk taken from Spain Data)
 using DifferentialEquations
 using Plots
 
@@ -12,9 +12,9 @@ using Plots
 # 8. D
 
 #Each scenario has a name and mortalities mu_jov and mu_old
-name = "Imperial_"
+name = "Spain_"
 #Valores originales NumC = 2.28, Dur=5.8
-function simulacion( name; num_dias_simulacion = 350, mu_jov = 1.2921/1000, mu_old= 3.24/100.0, NumC = 2.28, Dur=5.8, fun_1 = alpha_1, fun_2=alpha_2)
+function simulacion( name; num_dias_simulacion = 350, mu_jov = 3.32664/1000, mu_old= 9.35358/100.0, NumC = 2.28, Dur=5.8, fun_1 = alpha_1, fun_2=alpha_2)
     #Common parameters
     c = NumC/Dur
     #Death and recovery rates:
@@ -73,19 +73,20 @@ for NumC=[2.2,2.5,2.8]
             #For each simulation we define the quarantine functions and then run simulate
             #Cumulative death counts:
             font = Plots.font("Helvetica", 9)
-            deathsPlot1 = plot(title= "Cumulative number of deaths per group:", xaxis=("t (in days)"), yaxis = ("number of deaths (in thousands)"), legend=:topleft, legendfont= font, size =(800,600), lw=17)
+            deathsPlot1 = plot(title= "Cumulative number of deaths per group:",xaxis=("t (in days)"), yaxis = ("number of deaths (in thousands)"), legend=:topleft, legendfont= font, size =(800,600), lw=17)
 
             font = Plots.font("Helvetica", 11)
-            deathsPlot2 = plot(title= "Cumulative number of deaths:", xaxis=("t (in days)"), yaxis = ("number of deaths (in thousands)"), legend=:topleft, legendfont= font, size =(800,600), lw=17)
+            deathsPlot2 = plot(title= "Cumulative number of deaths:",xaxis=("t (in days)"), yaxis = ("number of deaths (in thousands)"), legend=:topleft, legendfont= font, size =(800,600), lw=17)
 
             font = Plots.font("Helvetica", 11)
-            InfectedPlot = plot(title= "Number of Infected individuals each group", xaxis=("t (in days)"), yaxis = ("number of deaths (in thousands)"), legend=:topright, legendfont= font, size =(800,600), lw=17)
+            InfectedPlot = plot(title= "Number of Infected individuals in each group", xaxis=("t (in days)"), yaxis = ("number of deaths (in thousands)"), legend=:topright, legendfont= font, size =(800,600), lw=17)
 
             avail = Avail
             #Quarentena maxima
             max_quar = 100
             #NumC = 2.28
             #avail=0.4
+
             # Escenario 1: NQ Nada de cuarentena
             function alpha_1(t)
                 return 1.0
@@ -149,6 +150,7 @@ for NumC=[2.2,2.5,2.8]
 
             plot!(deathsPlot2, sol, vars = (0,8), linestyle = :dash, label="RBQ_M",yformatter = :plain)
             print_res(sol, nombre*paramsName)
+
 
 
             # Escenario 2c: RBQ long sep
