@@ -196,7 +196,7 @@ for NumC=[2.2,2.5,2.8]
 
             savefig(deathsPlot1, name*paramsName*"_deathsPlot_v1.png")
             savefig(deathsPlot2, name*paramsName*"_deathsPlot_v2.png")
-            savefig(InfectedPlot,name*paramsName*"_InfectedPlot.png")
+            savefig(InfectedPlot, name*paramsName*"_InfectedPlot.png")
         end
     end
 end
